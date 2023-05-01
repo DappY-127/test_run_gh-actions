@@ -31,8 +31,12 @@ public class SupplierLoginTest extends BaseTest {
         SupplierDashboardPage supplierDashboardPage = new SupplierDashboardPage(driver);
         getWait().until(ExpectedConditions.visibilityOf(supplierDashboardPage.getSupplierAccountDropdown()));
         getWait().until(ExpectedConditions.visibilityOf(supplierDashboardPage.getDashboardLabel()));
-        Assertions.assertTrue(getDriver().getCurrentUrl().contains("/supplier"));
-        Assertions.assertTrue(supplierDashboardPage.isDashboardLabelDisplayed());
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(getDriver().getCurrentUrl().contains("/supplier"),
+                        "URL doesn't contain '/supplier'"),
+                () -> Assertions.assertTrue(supplierDashboardPage.isDashboardLabelDisplayed(),
+                        "Dashboard label is not displayed")
+        );
     }
 
     @Test
@@ -41,7 +45,14 @@ public class SupplierLoginTest extends BaseTest {
         test = extent.createTest("Supplier login with empty login field", "____");
         supplierLoginPage.supplierLogin("", supplierPassword);
         getWait().until(ExpectedConditions.visibilityOf(supplierLoginPage.getEmptyEmailFieldErrorMessage()));
-        Assertions.assertTrue(supplierLoginPage.isEmptyEmailFieldErrorMessageDisplayed());
+        String expectedErrorMessage = "The Email field is required.";
+        String actualErrorMessage = supplierLoginPage.getEmptyEmailFieldErrorMessage().getText();
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(supplierLoginPage.isEmptyEmailFieldErrorMessageDisplayed(),
+                        "Empty email field error label is not displayed"),
+                () -> Assertions.assertEquals(expectedErrorMessage, actualErrorMessage,
+                        "Error message is not as expected.")
+        );
     }
 
     @Test
@@ -50,7 +61,14 @@ public class SupplierLoginTest extends BaseTest {
         test = extent.createTest("Supplier login with empty login field", "____");
         supplierLoginPage.supplierLogin(supplierLogin, "");
         getWait().until(ExpectedConditions.visibilityOf(supplierLoginPage.getEmptyPasswordFieldErrorMessage()));
-        Assertions.assertTrue(supplierLoginPage.isEmptyPasswordFieldErrorMessageDisplayed());
+        String expectedErrorMessage = "The Password field is required.";
+        String actualErrorMessage = supplierLoginPage.getEmptyPasswordFieldErrorMessage().getText();
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(supplierLoginPage.isEmptyPasswordFieldErrorMessageDisplayed(),
+                        "Empty password field error label is not displayed"),
+                () -> Assertions.assertEquals(expectedErrorMessage, actualErrorMessage,
+                        "Error message is not as expected.")
+        );
     }
 
     @Test
@@ -59,7 +77,14 @@ public class SupplierLoginTest extends BaseTest {
         test = extent.createTest("Supplier login with invalid email format in email field", "____");
         supplierLoginPage.supplierLogin("phptravels.com", getConfig().getProperty("password.invalid"));
         getWait().until(ExpectedConditions.visibilityOf(supplierLoginPage.getInvalidEmailFormatErrorMessage()));
-        Assertions.assertTrue(supplierLoginPage.isInvalidEmailFormatErrorMessageDisplayed());
+        String expectedErrorMessage = "The Email field must contain a valid email address.";
+        String actualErrorMessage = supplierLoginPage.getInvalidEmailFormatErrorMessage().getText();
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(supplierLoginPage.isInvalidEmailFormatErrorMessageDisplayed(),
+                        "Invalid email format field error label is not displayed"),
+                () -> Assertions.assertEquals(expectedErrorMessage, actualErrorMessage,
+                        "Error message is not as expected.")
+        );
     }
 
     @Test
@@ -68,7 +93,14 @@ public class SupplierLoginTest extends BaseTest {
         test = extent.createTest("Supplier login with invalid credentials", "____");
         supplierLoginPage.supplierLogin(getConfig().getProperty("login.invalid"), getConfig().getProperty("password.invalid"));
         getWait().until(ExpectedConditions.visibilityOf(supplierLoginPage.getInvalidLoginCredentialsErrorMessage()));
-        Assertions.assertTrue(supplierLoginPage.isInvalidCredentialsErrorMessageDisplayed());
+        String expectedErrorMessage = "Invalid Login Credentials";
+        String actualErrorMessage = supplierLoginPage.getInvalidLoginCredentialsErrorMessage().getText();
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(supplierLoginPage.isInvalidCredentialsErrorMessageDisplayed(),
+                        "Invalid credentials error label is not displayed"),
+                () -> Assertions.assertEquals(expectedErrorMessage, actualErrorMessage,
+                        "Error message is not as expected.")
+        );
     }
 
 }
